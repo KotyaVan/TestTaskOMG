@@ -110,22 +110,15 @@ public class ElementsGameController : MonoBehaviour
 
             if (hasMatches)
             {
-                var fieldProcessesBeforeDestroy = _fieldModel.FieldProcesses;
                 var fieldActiveProcessesBeforeDestroy = _fieldModel.FieldActiveProcesses;
+
+                // Уничтожаем заматченные фишки
+                await DestroyMatchedPieces(matches);
 
                 // Помечаем фишки, которые над замаченными, что им предстоит осыпание
                 var piecesAboveMatches =
                     ElementsGameUtils.GetAndMarkPiecesAboveMatches(matches, fieldView,
                         fieldActiveProcessesBeforeDestroy);
-                // Уничтожаем заматченные фишки
-                await DestroyMatchedPieces(matches);
-
-                //Пока шел дестрой, был еще один сваип (или закончилось уничтожение), надо пересчитать фишки, которые есть над матченными фишками
-                if (_fieldModel.FieldProcesses > fieldProcessesBeforeDestroy ||
-                    _fieldModel.FieldActiveProcesses < fieldActiveProcessesBeforeDestroy)
-                    piecesAboveMatches =
-                        ElementsGameUtils.GetAndMarkPiecesAboveMatches(matches, fieldView,
-                            fieldActiveProcessesBeforeDestroy);
 
                 // Находим фишкам для падения нужные координаты
                 var piecesToFallAfterMatch =
